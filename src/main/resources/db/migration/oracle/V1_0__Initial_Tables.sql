@@ -1,0 +1,6 @@
+
+CREATE TABLE ${prefix}KEY_VALUE_STORE_VALUE (
+    ID       VARCHAR2(128) NOT NULL PRIMARY KEY,
+    KEY_TEXT CLOB          NOT NULL,
+    DATA     BLOB          NOT NULL
+);
