@@ -1,4 +1,4 @@
 version="1.0.0"
-name="sessionplugin"
+name="keyvaluestoreplugin"
 remote_tag=simplifierag/${name}:${version}
 echo "***** building:" ${name}:${version}
