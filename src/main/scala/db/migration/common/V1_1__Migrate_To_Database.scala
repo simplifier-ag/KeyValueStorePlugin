@@ -23,7 +23,14 @@ abstract class V1_1__Migrate_To_Database extends BaseJavaMigration with Logging 
     val maxSize: Long = 104857600
     val connection = context.getConnection
     val config = KeyValueStorePlugin.BASIC_STATE.config
-    val mapDbFileName: String = config.getString("plugin.filename")
+    val mapDbFileName: String = Try(config.getString("plugin.filename")) match {
+      case Success(fn) => fn
+      case Failure(e) if config.hasPath("plugin.filename") => throw e
+      case _ =>
+        logger.warn("Could not access the mapDB filename from the configuration " +
+          "for path: [plugin.filename], using the value: [/tmp/kvstore] as a fallback.")
+        "/tmp/kvstore"
+    }
     logger.info("setup")
     val mapDb = DBMaker.fileDB(new File(mapDbFileName))
       .compressionEnable()

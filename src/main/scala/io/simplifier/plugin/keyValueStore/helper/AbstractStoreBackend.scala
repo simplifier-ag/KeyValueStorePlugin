@@ -2,20 +2,29 @@ package io.simplifier.plugin.keyValueStore.helper
 
 import com.typesafe.config.Config
 import io.simplifier.plugin.keyValueStore.helper.AbstractStoreBackend.StoreType
+import io.simplifier.pluginbase.util.logging.Logging
 import org.mapdb.{DB, DBMaker, HTreeMap, Serializer}
 
 import java.io.File
+import scala.util.{Failure, Success, Try}
 
 /**
   * Abstract store backend defining interface for different store backend implementations.
   * Also contains logic to initialize mapdb file storage
   */
-abstract class AbstractStoreBackend(config: Config, val storeType: StoreType) {
+abstract class AbstractStoreBackend(config: Config, val storeType: StoreType) extends Logging{
 
   /**
     * filename of storage file from config used by MapDb Backend or migration to database
     */
-  lazy val mapDbFileName: String = config.getString("plugin.filename")
+  lazy val mapDbFileName: String = Try(config.getString("plugin.filename")) match {
+    case Success(fn) => fn
+    case Failure(e) if config.hasPath("plugin.filename") => throw e
+    case _ =>
+      logger.warn("Could not access the mapDB filename from the configuration " +
+        "for path: [plugin.filename], using the value: [/tmp/kvstore] as a fallback.")
+      "/tmp/kvstore"
+  }
 
   /**
     * Get data from store for given key
@@ -61,7 +70,7 @@ abstract class AbstractStoreBackend(config: Config, val storeType: StoreType) {
   def shutdown(): Unit = {}
 
   /**
-    * Init MapDB, either as Storage used in [[MapDbStoreBackend]], or during migration to DB.
+    * Init MapDB, either as Storage used in [[DatabaseStoreBackend]], or during migration to DB.
     *
     * @return opened MapDB instance
     */
@@ -74,7 +83,7 @@ abstract class AbstractStoreBackend(config: Config, val storeType: StoreType) {
   }
 
   /**
-    * Init MapDB Store, either as Storage used in [[MapDbStoreBackend]], or during migration to DB.
+    * Init MapDB Store, either as Storage used in [[DatabaseStoreBackend]], or during migration to DB.
     *
     * @param db opened MapDB instance
     * @return opened MapDB Store instance
