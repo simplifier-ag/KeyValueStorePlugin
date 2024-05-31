@@ -18,7 +18,7 @@ or for or a short [Plugin documentation PDF](./documentation/manual.pdf).
 
 You can run the plugin locally. Your Simplifier AppServer has to be running and has to be accessible locally.
 
-There is only on additions step to be done before building and testing:
+There is only one additional step to be done before building and testing:
 
 
 ### Additional Step: Adding the Oracle JDBC Driver
