@@ -1,4 +1,5 @@
 deployment/assets/*.jar
+sbt.json
 
 .idea/
 target/
