@@ -18,36 +18,6 @@ or for or a short [Plugin documentation PDF](./documentation/manual.pdf).
 
 You can run the plugin locally. Your Simplifier AppServer has to be running and has to be accessible locally.
 
-There is only one additional step to be done before building and testing:
-
-
-### Additional Step: Adding the Oracle JDBC Driver
-- in the source tree: create a lib directory
-- then copy the Oracle JDBC driver version 23.3 to this directory
-- the sourcetree then looks like this:
-```
-├── build
-│   └── artifacts
-│       ├── assets
-│       │   ├── keyValueStorePlugin.arg
-│       │   └── keyValueStorePlugin.conf
-│       ├── build.sh
-│       ├── Dockerfile
-│       └── setup.sh
-├── build.sbt
-├── lib
-│   └── ojdbc8.jar
-├── LICENSE
-├── project
-├── README.md
-├── src
-│   ├── main   ...
-│   └── test   ...
-└── version.sh
-
-```
-
-
 
 ## Local Deployment
 
