@@ -63,6 +63,8 @@ class KeyValueStoreController(val storeBackend: AbstractStoreBackend, dispatcher
     Success(new Result(list))
   }
 
+  private val Base64Regex = "^([a-zA-Z0-9+/]{4}|[a-zA-Z0-9+/]{3}=|[a-zA-Z0-9+/]{2}==)*$".r
+
   def put(request: PutByKey)(implicit userSession: UserSession, requestSource: RequestSource): Future[Result] = {
     permissionHandler.checkAdditionalPermission(characteristicEdit)
     val putData: Array[Byte] => Result = data => {
@@ -70,8 +72,10 @@ class KeyValueStoreController(val storeBackend: AbstractStoreBackend, dispatcher
       new Result("ok")
     }
     (request.content, request.uploadSession, request.copyFrom) match {
-      case (Some(value), _, _) =>
+      case (Some(Base64Regex(value)), _, _) =>
         Future.successful(putData(decodeB64(value)))
+      case (Some(_), _, _) =>
+        Future.failed(InvalidInputFormat)
       case (_, Some(uploadSession), _) =>
         dispatcher.downloadAssetAsByteArray(uploadSession) map putData
       case (_, _, Some(copyKey)) =>
@@ -124,5 +128,8 @@ object KeyValueStoreController {
 
   def FileNotFound: OperationFailureMessage =
     OperationFailureMessage(s"File to copy from not found", Constants.KEY_VALUE_NOT_FOUND)
+
+  def InvalidInputFormat: OperationFailureMessage =
+    OperationFailureMessage(s"Parameter 'content' must be base-64 encoded", Constants.INVALID_INPUT_FORMAT)
 
 }
