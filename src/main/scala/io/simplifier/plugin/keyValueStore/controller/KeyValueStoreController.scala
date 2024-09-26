@@ -17,6 +17,7 @@ import io.simplifier.pluginbase.slotservice.GenericRestMessages.RestMessage
 import io.simplifier.pluginbase.util.api.ApiMessage
 import io.simplifier.pluginbase.util.json.JSONCompatibility.parseJsonOrEmptyString
 import io.simplifier.pluginbase.util.json.SimplifierFormats
+import io.simplifier.pluginbase.util.logging.Logging
 import org.json4s._
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -25,7 +26,7 @@ import scala.util.{Success, Try}
 
 class KeyValueStoreController(val storeBackend: AbstractStoreBackend, dispatcher: AppServerDispatcher,
                               pluginSettings: PluginSettings, permissionHandler: PermissionHandler)
-                             (implicit materializer: Materializer) extends Base64Encoding with SimplifierFormats {
+                             (implicit materializer: Materializer) extends Base64Encoding with SimplifierFormats with Logging {
 
   import KeyValueStoreController._
 
@@ -75,6 +76,7 @@ class KeyValueStoreController(val storeBackend: AbstractStoreBackend, dispatcher
       case (Some(Base64Regex(value)), _, _) =>
         Future.successful(putData(decodeB64(value)))
       case (Some(_), _, _) =>
+        logger.trace("Received input not in base64, rejecting.")
         Future.failed(InvalidInputFormat)
       case (_, Some(uploadSession), _) =>
         dispatcher.downloadAssetAsByteArray(uploadSession) map putData
