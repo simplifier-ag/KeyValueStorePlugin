@@ -32,3 +32,7 @@ database_update {
   // ignore_dirty_schema: true
   // schema_version_table: "custom_schema_version"
 }
+
+akka.http.parsing.max-to-strict-bytes = 15m
+akka.http.client.parsing.max-content-length = 15m
+akka.http.server.parsing.max-content-length = 15m
