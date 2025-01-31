@@ -15,6 +15,4 @@ object Constants {
   val KEY_VALUE_NOT_FOUND: String = "A-001"
   val MISSING_PARAMETER_FAILURE: String = "A-002"
   val FILE_NOT_FOUND: String = "A-003"
-  val INVALID_INPUT_FORMAT: String = "A-004"
-
 }
